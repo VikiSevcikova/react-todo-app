@@ -81,7 +81,7 @@ const reducer = (userState, action) => {
     case "SET_FILTERED_USERS":
     return {
         ...userState,
-        filteredUsers: userState.users.filter(u => u.id !== userState.loggedInUser.id),
+        filteredUsers: userState.users ? userState.users.filter(u => u.id !== userState.loggedInUser.id) : [],
     };
     default:
       return userState;

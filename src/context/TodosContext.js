@@ -37,7 +37,7 @@ const reducer = (todosState, action) => {
     case "SET_FILTERED_TODOS":
     return {
         ...todosState,
-        filteredTodos: todosState.todos.filter(t => t.userId === action.payload),
+        filteredTodos: todosState.todos ? todosState.todos.filter(t => t.userId === action.payload) : [],
     };
     default:
       return todosState;
