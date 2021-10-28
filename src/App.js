@@ -7,11 +7,10 @@ import Login from './pages/Login';
 import { ThemeProvider } from '@mui/material/styles';
 import Signup from './pages/Signup';
 import PrivateRoute from './components/PrivateRoute';
-import Todos from './components/Todos';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getFromLocalStorage, saveToLocalStorage } from './Utils';
-import { theme } from "./components/Theme";
+import { theme } from "./style/Theme";
 import Dashboard from "./pages/Dashboard";
 
 function App() {

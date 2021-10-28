@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Navbar from '../components/Navbar';
-import styles from "../style.module.css";
+import styles from "../style/style.module.css";
 import Todos from '../components/Todos';
 import Users from '../components/Users';
 

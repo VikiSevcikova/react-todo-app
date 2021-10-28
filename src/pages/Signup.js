@@ -1,4 +1,4 @@
-import styles from "../style.module.css";
+import styles from "../style/style.module.css";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
