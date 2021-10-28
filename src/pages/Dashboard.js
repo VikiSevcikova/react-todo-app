@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import styles from "../style/style.module.css";
 import Todos from '../components/Todos';
 import Users from '../components/Users';
-import { Redirect } from 'react-router';
 import { getFromLocalStorage } from '../Utils';
 
 const Dashboard = () => {

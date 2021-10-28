@@ -18,9 +18,12 @@ import { useState } from "react";
 import { Typography } from "@mui/material";
 import InputField from "../components/InputField";
 import { Link, useHistory } from "react-router-dom";
+import AlertMessage from "../components/AlertMessage";
 
 const Login = ({ users }) => {
   const history = useHistory();
+  const [alert, setAlert] = useState({state: false, message: ""});
+
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -48,11 +51,7 @@ const Login = ({ users }) => {
       );
       history.push("/");
     } else {
-      setValues({
-        ...values,
-        emailError: "Wrong email or password",
-        passwordError: "Wrong email or password",
-      });
+      setAlert({...alert, state:true, message:"Invalid email or password."})
     }
   };
 
@@ -150,6 +149,7 @@ const Login = ({ users }) => {
           </CardActions>
         </Box>
       </Card>
+      <AlertMessage alert={alert} setAlert={setAlert} />
     </div>
   );
 };

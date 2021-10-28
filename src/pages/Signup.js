@@ -19,9 +19,12 @@ import { useState } from "react";
 import { Typography } from "@mui/material";
 import { Link, useHistory } from "react-router-dom";
 import InputField from "../components/InputField";
+import AlertMessage from "../components/AlertMessage";
 
 const Signup = ({ users, setUsers }) => {
   const history = useHistory();
+  const [alert, setAlert] = useState({state: false, message: ""});
+
   const [values, setValues] = useState({
     name: "",
     email: "",
@@ -36,10 +39,7 @@ const Signup = ({ users, setUsers }) => {
     e.preventDefault();
     if (values.nameError || values.emailError || values.passwordError) return;
     if (users && users.some((u) => u.email === values.email)) {
-      setValues({
-        ...values,
-        emailError: "This email already signed up.",
-      });
+        setAlert({...alert, state:true, message:"User with submitted email already exists."})
       return;
     }
     let newUser = {
@@ -167,6 +167,7 @@ const Signup = ({ users, setUsers }) => {
           </CardActions>
         </Box>
       </Card>
+      <AlertMessage alert={alert} setAlert={setAlert} />
     </div>
   );
 };

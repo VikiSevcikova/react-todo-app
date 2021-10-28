@@ -1,7 +1,6 @@
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route
+  HashRouter as Router,
+  Switch
 } from "react-router-dom";
 import Login from './pages/Login';
 import { ThemeProvider } from '@mui/material/styles';
@@ -31,10 +30,10 @@ function App() {
   },[users]);
 
   return (
-    <Router basename={process.env.PUBLIC_URL}>   
+    <Router basename="/">   
       <ThemeProvider theme={theme}> 
         <Switch>
-        <PublicRoute exact
+          <PublicRoute exact
             path="/login"
           >
             <Login users={users}/>
@@ -51,7 +50,7 @@ function App() {
           <Route exact path="/signup">
             <Signup users={users} setUsers={setUsers}/>
           </Route> */}
-          <PrivateRoute path="/" exact>
+          <PrivateRoute path="/" exact >
             <Dashboard />
           </PrivateRoute>
         </Switch>
