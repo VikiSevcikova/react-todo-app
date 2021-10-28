@@ -1,9 +1,10 @@
 import { Redirect, Route } from "react-router-dom";
 import { getFromLocalStorage } from "../Utils";
-import Users from "./Users";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   let user = getFromLocalStorage("loggedInUser");
+  console.log("private route")
+  console.log(user)
   return (
     <Route
       {...rest}

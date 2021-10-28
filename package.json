@@ -2,7 +2,7 @@
   "name": "react-todo-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vikisevcikova.github.io/react-todo-app/",
+  "homepage": "https://vikisevcikova.github.io/react-todo-app",
   "dependencies": {
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",

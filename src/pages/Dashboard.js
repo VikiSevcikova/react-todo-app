@@ -3,22 +3,22 @@ import Navbar from '../components/Navbar';
 import styles from "../style/style.module.css";
 import Todos from '../components/Todos';
 import Users from '../components/Users';
+import { Redirect } from 'react-router';
+import { getFromLocalStorage } from '../Utils';
 
 const Dashboard = () => {
-
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
+  const user = getFromLocalStorage('loggedInUser');
 
   return (
     <>
       <Navbar/>
       <div className={styles.container}>
-         {user.isAdmin ? 
+        {user.isAdmin ? 
             <Users user={user}/>
         :
             <Todos user={user}/>
         }
       </div>
-     
     </>
   );
 };
