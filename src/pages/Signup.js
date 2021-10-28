@@ -62,7 +62,7 @@ const Signup = () => {
         payload: newUser,
     });
 
-    history.push("/");
+    history.push("/login");
   };
 
   const handleChange = (prop) => (event) => {

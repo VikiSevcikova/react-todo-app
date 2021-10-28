@@ -36,7 +36,7 @@ const reducer = (userState, action) => {
         users: userState.users
           ? [...userState.users, action.payload]
           : [action.payload],
-        loggedInUser: action.payload,
+        // loggedInUser: action.payload,
       };
     case "LOG_IN":
       return {
