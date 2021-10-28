@@ -12,7 +12,7 @@ const Dashboard = () => {
     <>
       <Navbar/>
       <div className={styles.container}>
-        {user.isAdmin ? 
+        {user && user.isAdmin ? 
             <Users user={user}/>
         :
             <Todos user={user}/>

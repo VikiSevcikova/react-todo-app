@@ -10,7 +10,6 @@ const InputField = ({id, type, label, placeholder, value, handleChange, inputPro
         if(value === ''){
             setError(`${label} is required`);
         }else if(id === 'email' && !(/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value))){
-            console.log('invalid')
             setError(`${label} is invalid`);
         }else{
             setError('');

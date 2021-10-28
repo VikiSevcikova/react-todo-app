@@ -38,7 +38,7 @@ const Login = ({ users }) => {
     let user = users?.find(
       (u) => u.email === values.email && u.password === values.password
     );
-    console.log(user);
+
     if (user) {
       localStorage.setItem(
         "loggedInUser",
