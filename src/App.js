@@ -15,7 +15,6 @@ import PublicRoute from "./routes/PublicRoute";
 import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
-  const user = getFromLocalStorage("loggedInUser");
   const admin = {id: Math.random(), name:"Admin", email:"admin@gmail.com", isAdmin:"true", password:"123"}
   const [users, setUsers] = useState(getFromLocalStorage("users"));
   
@@ -35,15 +34,13 @@ function App() {
     <Router basename={process.env.PUBLIC_URL}>   
       <ThemeProvider theme={theme}> 
         <Switch>
-        <PublicRoute
+        <PublicRoute exact
             path="/login"
-            isAuthenticated={user}
           >
             <Login users={users}/>
           </PublicRoute>
-          <PublicRoute
-            path="/register"
-            isAuthenticated={user}
+          <PublicRoute exact
+            path="/signup"
           >
             <Signup users={users} setUsers={setUsers}/>
           </PublicRoute>
@@ -54,8 +51,8 @@ function App() {
           <Route exact path="/signup">
             <Signup users={users} setUsers={setUsers}/>
           </Route> */}
-          <PrivateRoute path="/" isAuthenticated={user} >
-            <Dashboard user={user}/>
+          <PrivateRoute path="/" exact>
+            <Dashboard />
           </PrivateRoute>
         </Switch>
       </ThemeProvider>

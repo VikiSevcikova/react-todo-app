@@ -4,21 +4,20 @@ import {
   } from 'react-router-dom';
 import { getFromLocalStorage } from '../Utils';
   
-  function PrivateRoute({ children, ...rest }) {
+  function PrivateRoute({ component: Component, ...rest }) {
     const user = getFromLocalStorage('loggedInUser');
     return (
       <Route
         {...rest}
         render={
-          ({ location }) => (
+          (props) => (
             user
               ? (
-                children
+                <Component {...props}/>
               ) : (
                 <Redirect
                   to={{
                     pathname: '/login',
-                    state: { from: location }
                   }}
                 />
               ))
