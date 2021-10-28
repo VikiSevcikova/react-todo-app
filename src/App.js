@@ -1,24 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import Login from './pages/Login';
+import { ThemeProvider } from '@mui/material/styles';
+import Signup from './pages/Signup';
+import PrivateRoute from './components/PrivateRoute';
+import Todos from './components/Todos';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getFromLocalStorage, saveToLocalStorage } from './Utils';
+import { theme } from "./components/Theme";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
+  const admin = {id: Math.random(), name:"Admin", email:"admin@gmail.com", isAdmin:"true", password:"123"}
+  const [users, setUsers] = useState(getFromLocalStorage("users"));
+  
+  useEffect(()=>{
+    if(!users.some(u => u.email === admin.email && u.isAdmin)){
+      setUsers([...users, admin]);
+    }
+  },[])
+
+  useEffect(()=>{
+    saveToLocalStorage("users", users);
+  },[users]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>   
+      <ThemeProvider theme={theme}> 
+        <Switch>
+          <Route exact path="/login">
+            <Login users={users}/>
+          </Route>
+          <Route exact path="/signup">
+            <Signup users={users} setUsers={setUsers}/>
+          </Route>
+          <PrivateRoute exact path="/" >
+            <Dashboard users={users} setUsers={setUsers} />
+          </PrivateRoute>
+        </Switch>
+      </ThemeProvider>
+    </Router>   
+
   );
 }
 
