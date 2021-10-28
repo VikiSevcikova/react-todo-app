@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -8,14 +8,22 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import InputField from "./InputField";
 import { Button } from "@mui/material";
+import { UserContext } from "../context/UserContext";
+import { AppContext } from "../context/AppContext";
 
-const User = ({ users, setUsers, user }) => {
+const User = ({user}) => {
   const [isEditable, setIsEditable] = useState(false);
+
+  const appContext = useContext(AppContext);
+  const { appDispatch } = appContext;
+
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { users } = userState;
+
   const [values, setValues] = useState({
     name: user.name,
     email: user.email,
-    nameError: null,
-    emailError: null,
   });
 
   const handleChange = (prop) => (event) => {
@@ -23,24 +31,34 @@ const User = ({ users, setUsers, user }) => {
   };
 
   const handleDelete = () => {
-    setUsers(users.filter((u) => u.id !== user.id));
+    userDispatch({
+      type: "DELETE_USER",
+      payload: user.id
+    });
+    appDispatch({
+      type: "SHOW_ALERT",
+      payload: "User was successfully deleted"
+    });
   };
 
   const handleUpdate = (e) => {
     e.preventDefault();
     if (values.nameError && values.emailError) return;
-    setUsers(
-      users.map((u) => {
-        if (u.id === user.id) {
-          return {
-            ...u,
-            name: values.name,
-            email: values.email,
-          };
-        }
-        return u;
-      })
-    );
+    if(users.some(u => u.email === values.email && u.id !== user.id)) {
+      appDispatch({
+        type: "SHOW_ALERT",
+        payload: "User with submitted email already exists"
+      });
+      return;
+    }
+    userDispatch({
+      type: "UPDATE_USER",
+      payload: {id: user.id, name: values.name, email: values.email}
+    })
+    appDispatch({
+      type: "SHOW_ALERT",
+      payload: "User was successfully updated"
+    });
     setIsEditable(false);
   };
 
@@ -93,7 +111,6 @@ const User = ({ users, setUsers, user }) => {
                 placeholder="Enter user's name here"
                 value={values.name}
                 handleChange={handleChange}
-                error={values.nameError}
               />
               <InputField
                 id="email"
@@ -102,7 +119,6 @@ const User = ({ users, setUsers, user }) => {
                 placeholder="Enter user's email here"
                 value={values.email}
                 handleChange={handleChange}
-                error={values.emailError}
               />
               <Box
                 sx={{

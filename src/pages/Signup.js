@@ -15,31 +15,38 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Typography } from "@mui/material";
 import { Link, useHistory } from "react-router-dom";
 import InputField from "../components/InputField";
 import AlertMessage from "../components/AlertMessage";
+import { UserContext } from "../context/UserContext";
+import { AppContext } from "../context/AppContext";
 
-const Signup = ({ users, setUsers }) => {
+const Signup = () => {
   const history = useHistory();
-  const [alert, setAlert] = useState({state: false, message: ""});
+  const appContext = useContext(AppContext);
+  const { appDispatch } = appContext;
+
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { users } = userState;
 
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
     showPassword: false,
-    nameError: null,
-    emailError: null,
-    passwordError: null,
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (values.nameError || values.emailError || values.passwordError) return;
     if (users && users.some((u) => u.email === values.email)) {
-        setAlert({...alert, state:true, message:"User with submitted email already exists."})
+        appDispatch({
+            type: "SHOW_ALERT",
+            payload: "User with submitted email already exists"
+        })
       return;
     }
     let newUser = {
@@ -49,12 +56,13 @@ const Signup = ({ users, setUsers }) => {
       password: values.password,
       isAdmin: false,
     };
-    if (!users) {
-      setUsers([newUser]);
-    } else {
-      setUsers([...users, newUser]);
-    }
-    history.push("/login");
+    
+    userDispatch({
+        type: "SIGN_UP",
+        payload: newUser,
+    });
+
+    history.push("/");
   };
 
   const handleChange = (prop) => (event) => {
@@ -167,7 +175,7 @@ const Signup = ({ users, setUsers }) => {
           </CardActions>
         </Box>
       </Card>
-      <AlertMessage alert={alert} setAlert={setAlert} />
+      <AlertMessage />
     </div>
   );
 };

@@ -1,18 +1,21 @@
+import { useContext } from 'react';
 import {
     Route,
     Redirect
   } from 'react-router-dom';
-import { getFromLocalStorage } from '../Utils';
+import { UserContext } from '../context/UserContext';
   
   function PrivateRoute({ children, ...rest }) {
-    const user = getFromLocalStorage('loggedInUser');
-
+    const userContext = useContext(UserContext);
+    const { userState } = userContext;
+    const { loggedInUser } = userState;
+console.log(loggedInUser)
     return (
       <Route
         {...rest}
         render={
           () => (
-            user
+            loggedInUser
               ? (
                 children
               ) : (

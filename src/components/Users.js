@@ -1,18 +1,19 @@
 import { Grid } from "@mui/material";
-import { useState, useEffect } from "react";
-import { getFromLocalStorage, saveToLocalStorage } from "../Utils";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import AddButton from "./AddButton";
 import User from "./User";
 import UserModalForm from "./UserModalForm";
 
-const Users = ({ user }) => {
-  const [open, setOpen] = useState(false);
-  const [users, setUsers] = useState(getFromLocalStorage("users"));
-  const [filteredUsers, setFilteredUsers] = useState(null);
+const Users = () => {
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { users, filteredUsers } = userState;
 
   useEffect(() => {
-    if (user) setFilteredUsers(users.filter((u) => u.id !== user.id));
-    saveToLocalStorage("users", users);
+    userDispatch({
+      type: "SET_FILTERED_USERS",
+    })
   }, [users]);
 
   return (
@@ -20,7 +21,7 @@ const Users = ({ user }) => {
       {filteredUsers && filteredUsers.length !== 0 ? (
         <Grid container spacing={2}>
           {filteredUsers.map((u) => (
-            <User key={u.id} user={u} users={users} setUsers={setUsers} />
+            <User key={u.id} user={u}/>
           ))}
         </Grid>
       ) : (
@@ -34,13 +35,8 @@ const Users = ({ user }) => {
           <span>No User Added Yet</span>
         </Grid>
       )}
-      <AddButton setOpen={setOpen} open={open} />
-      <UserModalForm
-        users={users}
-        setUsers={setUsers}
-        open={open}
-        setOpen={setOpen}
-      />
+      <AddButton />
+      <UserModalForm />
     </>
   );
 };

@@ -1,17 +1,23 @@
-import * as React from 'react';
+import {useContext, userContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useHistory } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
 const Navbar = () => {
   const history = useHistory();
-  const user = JSON.parse(localStorage.getItem("loggedInUser"));
 
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { loggedInUser } = userState;
+  
   const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
+    userDispatch({
+      type: "LOG_OUT"
+    })
     history.push("/login");
   }
 
@@ -20,7 +26,7 @@ const Navbar = () => {
       <AppBar position="static" color="secondary">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 700}}>
-            Hello {user && user.name}
+            Hello {loggedInUser && loggedInUser.name}
           </Typography>
           <Button onClick={handleLogout} variant="contained" color="warning">Logout</Button>
         </Toolbar>

@@ -1,21 +1,28 @@
-import * as React from 'react';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { getFromLocalStorage, saveToLocalStorage } from '../Utils';
 import Grid from '@mui/material/Grid';
 import AddButton from './AddButton';
 import { useEffect } from 'react';
 import Todo from './Todo';
 import TodoModalForm from './TodoModalForm';
+import { TodosContext } from '../context/TodosContext';
+import { UserContext } from '../context/UserContext';
+import { AppContext } from '../context/AppContext';
 
-const Todos = ({user}) => {
-  const [todos, setTodos] = useState(getFromLocalStorage("todos"));
-  const [filteredTodos, setFilteredTodos] = useState(null);
+const Todos = () => {
+  const userContext = useContext(UserContext);
+  const { userState } = userContext;
+  const { loggedInUser } = userState;
 
-  const [open, setOpen] = useState(false);
+  const todosContext = useContext(TodosContext);
+  const { todosState, todosDispatch } = todosContext;
+  const { todos, filteredTodos } = todosState;
 
   useEffect(()=>{
-    if(user && todos) setFilteredTodos(todos.filter(t => t.userId === user.id));
-    saveToLocalStorage("todos", todos);
+    todosDispatch({
+      type: "SET_FILTERED_TODOS",
+      payload: loggedInUser.id
+    })
   },[todos])
 
   return (
@@ -25,7 +32,7 @@ const Todos = ({user}) => {
             container
             spacing={2}
           >
-            {filteredTodos.map(todo => <Todo key={todo.id} todo={todo} todos={todos} setTodos={setTodos}/>)}
+            {filteredTodos.map(todo => <Todo key={todo.id} todo={todo}/>)}
         </Grid>
         :
         <Grid
@@ -38,8 +45,8 @@ const Todos = ({user}) => {
           <span>No Tasks Added Yet</span>
       </Grid>
       }
-      <AddButton setOpen={setOpen}/>
-      <TodoModalForm todos={todos} setTodos={setTodos} open={open} setOpen={setOpen}/>
+      <AddButton />
+      <TodoModalForm />
     </>     
   );
 };

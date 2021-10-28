@@ -14,22 +14,27 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Typography } from "@mui/material";
 import InputField from "../components/InputField";
 import { Link, useHistory } from "react-router-dom";
 import AlertMessage from "../components/AlertMessage";
+import { UserContext } from "../context/UserContext";
+import { AppContext } from "../context/AppContext";
 
-const Login = ({ users }) => {
+const Login = () => {
   const history = useHistory();
-  const [alert, setAlert] = useState({state: false, message: ""});
+  const appContext = useContext(AppContext);
+  const { appDispatch } = appContext;
+
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { users } = userState;
 
   const [values, setValues] = useState({
     email: "",
     password: "",
     showPassword: false,
-    emailError: null,
-    passwordError: null,
   });
 
   const handleSubmit = (e) => {
@@ -40,18 +45,16 @@ const Login = ({ users }) => {
     );
 
     if (user) {
-      localStorage.setItem(
-        "loggedInUser",
-        JSON.stringify({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          isAdmin: user.isAdmin,
-        })
-      );
+        userDispatch({
+            type: "LOG_IN",
+            payload: { email: values.email, password: values.password },
+        }); 
       history.push("/");
     } else {
-      setAlert({...alert, state:true, message:"Invalid email or password."})
+        appDispatch({
+            type: "SHOW_ALERT",
+            payload: "Invalid email or password"
+        })
     }
   };
 
@@ -94,7 +97,6 @@ const Login = ({ users }) => {
                   </InputAdornment>
                 ),
               }}
-              error={values.emailError}
             />
             <InputField
               id="password"
@@ -123,7 +125,6 @@ const Login = ({ users }) => {
                   </InputAdornment>
                 ),
               }}
-              error={values.passwordError}
             />
           </CardContent>
           <CardActions
@@ -149,7 +150,7 @@ const Login = ({ users }) => {
           </CardActions>
         </Box>
       </Card>
-      <AlertMessage alert={alert} setAlert={setAlert} />
+      <AlertMessage />
     </div>
   );
 };

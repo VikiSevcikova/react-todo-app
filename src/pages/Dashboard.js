@@ -1,21 +1,23 @@
-import * as React from 'react';
+import {useContext} from 'react';
 import Navbar from '../components/Navbar';
 import styles from "../style/style.module.css";
 import Todos from '../components/Todos';
 import Users from '../components/Users';
-import { getFromLocalStorage } from '../Utils';
+import { UserContext } from '../context/UserContext';
 
 const Dashboard = () => {
-  const user = getFromLocalStorage('loggedInUser');
+  const userContext = useContext(UserContext);
+  const { userState } = userContext;
+  const { loggedInUser } = userState;
 
   return (
     <>
       <Navbar/>
       <div className={styles.container}>
-        {user && user.isAdmin ? 
-            <Users user={user}/>
+        {loggedInUser && loggedInUser.isAdmin ? 
+            <Users />
         :
-            <Todos user={user}/>
+            <Todos />
         }
       </div>
     </>

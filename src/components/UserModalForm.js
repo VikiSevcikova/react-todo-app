@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useContext } from "react";
 import Box from "@mui/material/Box";
 import InputField from "./InputField";
 import { useState } from "react";
@@ -14,16 +14,21 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import ModalForm from "./ModalForm";
 import AlertMessage from "./AlertMessage";
+import { UserContext } from "../context/UserContext";
+import { AppContext } from "../context/AppContext";
 
-const UserModalForm = ({ users, setUsers, open, setOpen }) => {
-  const [alert, setAlert] = useState({state: false, message: ""});
+const UserModalForm = () => {
+  const appContext = useContext(AppContext);
+  const { appDispatch } = appContext;
+
+  const userContext = useContext(UserContext);
+  const { userState, userDispatch } = userContext;
+  const { users } = userState;
+
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
-    nameError: null,
-    emailError: null,
-    passwordError: null,
   });
 
   const handleChange = (prop) => (event) => {
@@ -31,14 +36,13 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
   };
 
   const handleModalClose = () => {
-    setOpen(false);
+    appDispatch({
+        type: "CLOSE_MODAL"
+    })
     setValues({
       name: "",
       email: "",
       password: "",
-      nameError: null,
-      emailError: null,
-      passwordError: null,
     });
   };
 
@@ -46,8 +50,11 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
     e.preventDefault();
     if (values.nameError || values.emailError || values.passwordError) return;
     if (users && users.some((u) => u.email === values.email)) {
-        setAlert({state:true, message: "User with submitted email already exists!"});
-        return;
+      appDispatch({
+        type: "SHOW_ALERT",
+        payload: "User with submitted email already exists",
+      });
+      return;
     }
     let newUser = {
       id: Math.random(),
@@ -56,17 +63,15 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
       password: values.password,
       isAdmin: false,
     };
-    if (users && users.length > 0) {
-      setUsers([...users, newUser]);
-    } else {
-      setUsers([
-        {
-          newUser,
-        },
-      ]);
-    }
+    userDispatch({
+      type: "ADD_USER",
+      payload: newUser,
+    });
     handleModalClose();
-    setAlert({state:true, message:"User sucessfully added."});
+    appDispatch({
+        type: "SHOW_ALERT",
+        payload: "User was sucessfully added",
+      });
   };
 
   const handleClickShowPassword = () => {
@@ -82,7 +87,7 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
 
   return (
     <>
-      <ModalForm title={"User"} open={open} handleModalClose={handleModalClose}>
+      <ModalForm title={"User"}>
         <Box
           component="form"
           onSubmit={handleSubmit}
@@ -102,7 +107,6 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
                 </InputAdornment>
               ),
             }}
-            error={values.nameError}
           />
           <InputField
             id="email"
@@ -118,7 +122,6 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
                 </InputAdornment>
               ),
             }}
-            error={values.emailError}
           />
           <InputField
             id="password"
@@ -147,7 +150,6 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
                 </InputAdornment>
               ),
             }}
-            error={values.passwordError}
           />
           <Box
             sx={{
@@ -168,7 +170,7 @@ const UserModalForm = ({ users, setUsers, open, setOpen }) => {
           </Box>
         </Box>
       </ModalForm>
-      <AlertMessage alert={alert} setAlert={setAlert} />
+      <AlertMessage />
     </>
   );
 };

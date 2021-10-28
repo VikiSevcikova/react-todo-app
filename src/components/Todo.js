@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -8,14 +8,22 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import InputField from "./InputField";
 import { Button } from "@mui/material";
+import { TodosContext } from "../context/TodosContext";
+import { AppContext } from "../context/AppContext";
 
-const Todo = ({ todos, setTodos, todo }) => {
+const Todo = ({ todo }) => {
+  const appContext = useContext(AppContext);
+  const { appDispatch } = appContext;
+
+  const todosContext = useContext(TodosContext);
+  const { todosState, todosDispatch } = todosContext;
+  const { filteredTodos } = todosState;
+
   const [isEditable, setIsEditable] = useState(false);
+
   const [values, setValues] = useState({
     title: todo.title,
     description: todo.description,
-    titleError: null,
-    descriptionError: null,
   });
 
   const handleChange = (prop) => (event) => {
@@ -23,24 +31,34 @@ const Todo = ({ todos, setTodos, todo }) => {
   };
 
   const handleDelete = () => {
-    setTodos(todos.filter((t) => t.id !== todo.id));
+    todosDispatch({
+      type: "DELETE_TODO",
+      payload: todo.id,
+    });
+    appDispatch({
+      type: "SHOW_ALERT",
+      payload: "Task was successfully deleted",
+    });
   };
 
   const handleUpdate = (e) => {
     e.preventDefault();
     if (values.titleError && values.descriptionError) return;
-    setTodos(
-      todos.map((t) => {
-        if (t.id === todo.id) {
-          return {
-            ...t,
-            title: values.title,
-            description: values.description,
-          };
-        }
-        return t;
-      })
-    );
+    if(filteredTodos.some(t=> t.title === values.title && t.id !== todo.id)) {
+      appDispatch({
+        type: "SHOW_ALERT",
+        payload: "Title has to be unique",
+      });
+      return; 
+    }
+    todosDispatch({
+      type: "UPDATE_TODO",
+      payload: { id: todo.id, title: values.title, description: values.description },
+    });
+    appDispatch({
+      type: "SHOW_ALERT",
+      payload: "Task was successfully updated",
+    });
     setIsEditable(false);
   };
 
@@ -93,7 +111,6 @@ const Todo = ({ todos, setTodos, todo }) => {
                 placeholder="Enter task title here"
                 value={values.title}
                 handleChange={handleChange}
-                error={values.titleError}
               />
               <InputField
                 id="description"
@@ -102,7 +119,6 @@ const Todo = ({ todos, setTodos, todo }) => {
                 placeholder="Enter task description here"
                 value={values.description}
                 handleChange={handleChange}
-                error={values.descriptionError}
                 multiline={{isMultiline: true, rows: 4}}
               />
               <Box
