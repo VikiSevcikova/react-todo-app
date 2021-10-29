@@ -1,4 +1,3 @@
-import styles from "../style/style.module.css";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
@@ -16,14 +15,16 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import { useContext, useState } from "react";
-import { Typography } from "@mui/material";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Typography } from "@mui/material";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import InputField from "../components/InputField";
 import AlertMessage from "../components/AlertMessage";
 import { UserContext } from "../context/UserContext";
 import { AppContext } from "../context/AppContext";
+import { useStyles } from "../style/Theme";
 
 const Signup = () => {
+  const classes = useStyles();
   const history = useHistory();
   const appContext = useContext(AppContext);
   const { appDispatch } = appContext;
@@ -81,10 +82,11 @@ const Signup = () => {
   };
 
   return (
-    <div className={styles.signupContainer}>
+    <Box container className={classes.signupContainer} sx={{display:"flex", justifyContent:"center", alignItems:"center", width:"100vw", height:"100vh"}}>
       <Card sx={{ maxWidth: 400 }}>
         <CardHeader
-          className={styles.cardHeader}
+          sx={{textAlign:"center"}}
+          className={classes.cardHeader}
           titleTypographyProps={{fontWeight:700, marginBottom: 2, variant:"h6" }}
           title="Hey, Welcome. Signup to access Task Management"
         />
@@ -169,14 +171,14 @@ const Signup = () => {
               Signup
             </Button>
             <Typography>
-              Already a member?
-              <Link to="/login">Login</Link>
+              Already a member? 
+              <Link component={RouterLink} to="/login">Login</Link>
             </Typography>
           </CardActions>
         </Box>
       </Card>
       <AlertMessage />
-    </div>
+    </Box>
   );
 };
 

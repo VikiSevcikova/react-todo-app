@@ -2,45 +2,25 @@ import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { ThemeProvider } from "@mui/material/styles";
 import Signup from "./pages/Signup";
-import { useEffect } from "react";
-import { useState } from "react";
-import { getFromLocalStorage, saveToLocalStorage } from "./Utils";
-import { theme } from "./style/Theme";
+import { useContext } from "react";
+import { getDesignTokens } from "./style/Theme";
 import Dashboard from "./pages/Dashboard";
 import PublicRoute from "./routes/PublicRoute";
 import PrivateRoute from "./routes/PrivateRoute";
 import NotFound from "./pages/NotFound";
-import { TodosProvider } from "./context/TodosContext";
-import { UserProvider } from "./context/UserContext";
-import { AppProvider } from "./context/AppContext";
+import { AppContext } from "./context/AppContext";
+import { createTheme } from "@mui/material/styles";
+import ThemeModeButton from "./components/ThemeModeButton";
+
 
 function App() {
-  const admin = {
-    id: Math.random(),
-    name: "Admin",
-    email: "admin@gmail.com",
-    isAdmin: "true",
-    password: "123",
-  };
-  const [users, setUsers] = useState(getFromLocalStorage("users"));
+  const appContext = useContext(AppContext);
+  const { appState } = appContext;
 
-  useEffect(() => {
-    if (!users) {
-      setUsers([admin]);
-    } else if (!users.some((u) => u.email === admin.email && u.isAdmin)) {
-      setUsers([...users, admin]);
-    }
-  }, []);
-
-  useEffect(() => {
-    saveToLocalStorage("users", users);
-  }, [users]);
+  const theme = createTheme(getDesignTokens(appState.mode));
 
   return (
     <ThemeProvider theme={theme}>
-      <AppProvider>
-      <UserProvider>
-        <TodosProvider>
           <Router>
               <Switch>
                 <PublicRoute exact path="/login">
@@ -55,9 +35,7 @@ function App() {
                 <Route component={NotFound} />
               </Switch>
           </Router>
-        </TodosProvider>
-      </UserProvider>
-      </AppProvider>
+          <ThemeModeButton/>
     </ThemeProvider>
   );
 }

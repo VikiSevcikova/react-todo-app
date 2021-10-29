@@ -9,7 +9,7 @@ import { UserContext } from '../context/UserContext';
     const userContext = useContext(UserContext);
     const { userState } = userContext;
     const { loggedInUser } = userState;
-console.log(loggedInUser)
+
     return (
       <Route
         {...rest}

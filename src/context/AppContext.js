@@ -1,11 +1,11 @@
-import React, { useEffect, useReducer } from "react";
-import { getFromLocalStorage } from "../Utils";
+import React, { useReducer } from "react";
 
 export const AppContext = React.createContext();
 
 const initialState = {
   alert: {isVisible: false, message: ""},
-  modal: {isOpen: false}
+  modal: {isOpen: false},
+  mode: "light"
 };
 
 const reducer = (appState, action) => {
@@ -29,6 +29,11 @@ const reducer = (appState, action) => {
       return {
         ...appState,
         alert: {isVisible: false, message: ''}
+    };
+    case "CHANGE_MODE":
+      return {
+        ...appState,
+        mode: appState.mode === "light" ? "dark" : "light"
     };
     default:
       return appState;

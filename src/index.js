@@ -3,10 +3,21 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { TodosProvider } from "./context/TodosContext";
+import { UserProvider } from "./context/UserContext";
+import { AppProvider } from "./context/AppContext";
+import CssBaseline from "@mui/material/CssBaseline";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+      <CssBaseline/>
+      <AppProvider>
+      <UserProvider>
+        <TodosProvider>
+          <App />
+        </TodosProvider>
+      </UserProvider>
+      </AppProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

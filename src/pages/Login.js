@@ -15,14 +15,16 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import { useContext, useState } from "react";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import InputField from "../components/InputField";
-import { Link, useHistory } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import AlertMessage from "../components/AlertMessage";
 import { UserContext } from "../context/UserContext";
 import { AppContext } from "../context/AppContext";
+import { useStyles } from "../style/Theme";
 
 const Login = () => {
+  const classes = useStyles();
   const history = useHistory();
   const appContext = useContext(AppContext);
   const { appDispatch } = appContext;
@@ -74,10 +76,11 @@ const Login = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
+    <Box container className={classes.loginContainer} sx={{display:"flex", justifyContent:"center", alignItems:"center", width:"100vw", height:"100vh"}}>
       <Card sx={{ maxWidth: 400 }}>
         <CardHeader
-          className={styles.cardHeader}
+          sx={{textAlign:"center"}}
+          className={classes.cardHeader}
           titleTypographyProps={{fontWeight:700, marginBottom: 2, variant:"h6" }}
           title="Hey, Welcome. Login to access Task Management"
         />
@@ -145,13 +148,13 @@ const Login = () => {
             </Button>
             <Typography>
               Not a member yet?
-              <Link to="/signup">Sign up</Link>
+              <Link component={RouterLink} to="/signup">Signup</Link>
             </Typography>
           </CardActions>
         </Box>
       </Card>
       <AlertMessage />
-    </div>
+    </Box>
   );
 };
 

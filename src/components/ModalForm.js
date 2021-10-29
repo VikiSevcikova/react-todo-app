@@ -11,7 +11,7 @@ import { useContext } from 'react';
 const FormDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiPaper-root': {
     padding: theme.spacing(3),
-    maxWidth: "350px"
+    maxWidth: "400px"
   }
 }));
 
